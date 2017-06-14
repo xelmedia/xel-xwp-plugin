@@ -21,4 +21,22 @@ class Database {
 
         return $postTypesList;
     }
+
+    public function get_tables() {
+        global $wpdb;
+
+        $tables = $wpdb->get_results("SHOW TABLES");
+        $tablesIn = "Tables_in_{$wpdb->dbname}";
+
+        $tableList = [];
+        foreach ($tables as $table) {
+
+
+            $tableList[] = [
+                "name" => $table->$tablesIn
+            ];
+        }
+
+        return $tableList;
+    }
 }

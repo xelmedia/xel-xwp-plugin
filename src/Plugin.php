@@ -15,5 +15,10 @@ class Plugin {
             'methods'  => 'GET',
             'callback' =>  array(__NAMESPACE__ .'\Database', 'get_post_types')
         ) );
+
+        register_rest_route( $namespace, '/db-tables/', array(
+            'methods'  => 'GET',
+            'callback' =>  array(__NAMESPACE__ .'\Database', 'get_tables')
+        ) );
     }
 }
