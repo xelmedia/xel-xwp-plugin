@@ -1,10 +1,9 @@
 {
     "name": "xel-webservices/xel-xwp-plugin",
     "version": "0.5",
-    "description": "Xel WordPress plugin",
-    "type": "wordpress-plugin",
+    "description": "Xel WordPress MU plugin",
+    "type": "wordpress-muplugin",
     "minimum-stability": "stable",
-    "require": {},
     "autoload": {
         "psr-4": {"Xel\\XWP\\": "src/"}
     }

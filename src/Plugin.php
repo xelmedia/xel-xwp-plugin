@@ -15,6 +15,5 @@ class Plugin {
             'methods'  => 'GET',
             'callback' =>  array(__NAMESPACE__ .'\Database', 'get_post_types')
         ) );
-
     }
 }

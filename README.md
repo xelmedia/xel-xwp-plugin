@@ -14,7 +14,7 @@ That's it! Verify if the url works!
 
 Receive all post types of the WordPress site: 
 
-`/wp-json/xel-xwp/post-types`
+`/wp-json/xel-xwp/v1/post-types`
 
 ####WP REST API v2 docs: 
 
