@@ -21,6 +21,11 @@ class Plugin {
             'callback' =>  array(__NAMESPACE__ .'\Database', 'get_tables')
         ) );
 
+        register_rest_route( $namespace, '/deactivated-plugins/', array(
+            'methods'  => 'GET',
+            'callback' =>  array(__NAMESPACE__ .'\Database', 'get_deactivated_plugins')
+        ) );
+
         remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
 
         add_filter( 'rest_pre_serve_request', function( $value ) {

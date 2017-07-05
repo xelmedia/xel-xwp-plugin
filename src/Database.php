@@ -37,4 +37,21 @@ class Database {
 
         return $tableList;
     }
+
+    public function get_deactivated_plugins() {
+        if ( ! function_exists( 'get_plugins' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+        $all_plugins = get_plugins();
+        $deactivatedPlugins = [];
+
+        foreach ($all_plugins as $plugin) {
+            if(is_plugin_inactive($plugin)) {
+                $deactivatedPlugins[] = [
+                    "name" => $plugin->name
+                ];
+            }
+        }
+        return $deactivatedPlugins;
+    }
 }
