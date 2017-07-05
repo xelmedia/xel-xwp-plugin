@@ -45,10 +45,12 @@ class Database {
         $all_plugins = get_plugins();
         $deactivatedPlugins = [];
 
-        foreach ($all_plugins as $plugin) {
+        foreach ($all_plugins as $file => $plugin) {
             if(is_plugin_inactive($plugin)) {
                 $deactivatedPlugins[] = [
-                    "name" => $plugin->name
+                    "name"  => Util::get_plugin_name($file),
+                    "label" => $plugin["Name"],
+                    "version" => $plugin["Version"]
                 ];
             }
         }
