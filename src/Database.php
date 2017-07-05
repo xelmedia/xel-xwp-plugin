@@ -4,7 +4,7 @@ namespace Xel\XWP;
 
 class Database {
 
-    public function get_post_types() {
+    public static function get_post_types() {
         $postTypes = get_post_types('', 'objects');
 
         $excludePostTypes = ['customize_changeset', 'attachment', 'revision', 'nav_menu_item', 'custom_css'];
@@ -22,7 +22,7 @@ class Database {
         return $postTypesList;
     }
 
-    public function get_tables() {
+    public static function get_tables() {
         global $wpdb;
 
         $tables = $wpdb->get_results("SHOW TABLES");
@@ -38,7 +38,7 @@ class Database {
         return $tableList;
     }
 
-    public function get_deactivated_plugins() {
+    public static function get_deactivated_plugins() {
         if ( ! function_exists( 'get_plugins' ) ) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }

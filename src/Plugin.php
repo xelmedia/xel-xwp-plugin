@@ -7,7 +7,7 @@ class Plugin {
         add_action( 'rest_api_init',  array(__CLASS__ , 'xel_rest_init'));
     }
 
-    public function xel_rest_init() {
+    public static function xel_rest_init() {
         $version = 'v1';
         $namespace = 'xel-xwp/' . $version;
 
