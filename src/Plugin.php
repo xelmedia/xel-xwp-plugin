@@ -4,10 +4,10 @@ namespace Xel\XWP;
 class Plugin {
 
     public function __construct() {
-        add_action( 'rest_api_init',  array(__CLASS__ , 'register_routes'));
+        add_action( 'rest_api_init',  array(__CLASS__ , 'xel_rest_init'));
     }
 
-    public function register_routes() {
+    public function xel_rest_init() {
         $version = 'v1';
         $namespace = 'xel-xwp/' . $version;
 
@@ -20,5 +20,15 @@ class Plugin {
             'methods'  => 'GET',
             'callback' =>  array(__NAMESPACE__ .'\Database', 'get_tables')
         ) );
+
+        remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
+
+        add_filter( 'rest_pre_serve_request', function( $value ) {
+            header( 'Access-Control-Allow-Origin: *' );
+            header( 'Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE' );
+            header( 'Access-Control-Allow-Credentials: true' );
+
+            return $value;
+        });
     }
 }
