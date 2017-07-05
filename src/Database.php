@@ -30,8 +30,6 @@ class Database {
 
         $tableList = [];
         foreach ($tables as $table) {
-
-
             $tableList[] = [
                 "name" => $table->$tablesIn
             ];
