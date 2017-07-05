@@ -1,5 +1,5 @@
 <?php
-namespace Xel\Xwp;
+namespace Xel\XWP;
 
 
 class Database {
