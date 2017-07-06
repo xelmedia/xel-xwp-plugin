@@ -73,4 +73,20 @@ class Database {
         }
         return $deactivatedPlugins;
     }
+
+    public static function get_deactivated_themes() {
+        $wpThemes = wp_get_themes();
+        $themes = [];
+        $currentTheme = get_current_theme();
+
+        foreach ($wpThemes as $theme => $value) {
+            if(strcmp($currentTheme, $value["Name"])) {
+                $themes[] = [
+                    "name" => $theme,
+                    "label" => $value["Name"]
+                ];
+            }
+        }
+        return $themes;
+    }
 }
