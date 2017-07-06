@@ -21,6 +21,11 @@ class Plugin {
             'callback' =>  array(__NAMESPACE__ .'\Database', 'get_tables')
         ) );
 
+        register_rest_route( $namespace, '/non-wp-tables/', array(
+            'methods'  => 'GET',
+            'callback' =>  array(__NAMESPACE__ .'\Database', 'get_non_wp_tables')
+        ) );
+
         register_rest_route( $namespace, '/deactivated-plugins/', array(
             'methods'  => 'GET',
             'callback' =>  array(__NAMESPACE__ .'\Database', 'get_deactivated_plugins')
