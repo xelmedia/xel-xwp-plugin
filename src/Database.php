@@ -105,4 +105,32 @@ class Database {
         }
         return $themes;
     }
+
+    public static function get_plugins() {
+        if ( ! function_exists( 'get_plugins' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+        $all_plugins = get_plugins();
+        $plugins = [];
+
+        foreach ($all_plugins as $plugin => $value) {
+            $plugins[] = [
+                "name" => Util::get_plugin_name($plugin),
+                "label" => $value["Name"]
+            ];
+        }
+        return $plugins;
+    }
+
+    public static function get_themes() {
+        $wpThemes = wp_get_themes();
+        $themes = [];
+        foreach ($wpThemes as $theme => $value) {
+            $themes[] = [
+                "name" => $theme,
+                "label" => $value["Name"]
+            ];
+        }
+        return $themes;
+    }
 }
