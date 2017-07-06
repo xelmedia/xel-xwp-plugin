@@ -38,14 +38,30 @@ class Database {
         return $tableList;
     }
 
-    public static function get_non_wp_tables() {
+    public static function get_wp_tables() {
         global $wpdb;
         $wp_tables = $wpdb->tables('all', true);
-        $all_tables = self::get_tables();
+        $tables = [];
+        foreach($wp_tables as $table => $name) {
+            $tables[] = [
+                "name" => $name
+            ];
+        }
+        return $tables;
+    }
 
+    public static function get_non_wp_tables() {
+        $wp_tables = self::get_wp_tables();
+        $all_tables = self::get_tables();
         $non_wp_tables = [];
         foreach ($all_tables as $table) {
-            $isWpTable = array_search($table['name'], $wp_tables);
+            $isWpTable = false;
+            foreach($wp_tables as $wpTable) {
+                if(strcmp($table['name'],$wpTable['name'])) {
+                    $isWpTable = true;
+                    break;
+                }
+            }
             if(!$isWpTable) {
                 $non_wp_tables[] = [
                     "name" => $table['name']
