@@ -82,8 +82,7 @@ class Database {
             if(is_plugin_inactive($plugin)) {
                 $deactivatedPlugins[] = [
                     "name"  => Util::get_plugin_name($file),
-                    "label" => $plugin["Name"],
-                    "version" => $plugin["Version"]
+                    "label" => $plugin["Name"]
                 ];
             }
         }
