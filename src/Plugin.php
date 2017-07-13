@@ -1,7 +1,7 @@
 <?php
 namespace Xel\XWP;
 
-use Xel\XWP\Rest\RestRequestTypes;
+use Xel\XWP\Rest\RestConstants;
 use Xel\XWP\Rest\RestRoute;
 
 class Plugin {

@@ -11,9 +11,11 @@ class RestRoute {
     protected $requestType;
 
     public function __construct($methodName, $class, $pathUri, $requestType) {
+        $reflectionClass = new \ReflectionClass($class);
+
         $this->methodName = $methodName;
         $this->pathUri = $pathUri;
-        $this->classPath = $class::getNamespaceName;
+        $this->classPath = $reflectionClass->getName();
         $this->requestType = $requestType;
     }
 

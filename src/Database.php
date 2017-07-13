@@ -4,6 +4,10 @@ namespace Xel\XWP;
 
 class Database {
 
+    /**
+     * Obtains all the postTypes in the database with a few exclusions.
+     * @return array
+     */
     public static function get_post_types() {
         $postTypes = get_post_types('', 'objects');
 
@@ -22,55 +26,35 @@ class Database {
         return $postTypesList;
     }
 
+    /**
+     * Obtains all the Wordpress tables, except the WP-core tables that are regulated by the wpcli commands (i.e postTypes)
+     * @return array
+     */
     public static function get_tables() {
         global $wpdb;
+        $excludeTables = ['options', 'users', 'usermeta', 'comments', 'commentmeta', 'termmeta', 'terms', 'term_taxonomy', 'term_relationships', 'posts', 'postmeta' ];
+        foreach ($excludeTables as $key => $value) {
+            $excludeTables[$key] = $wpdb->prefix . $value;
+        }
 
         $tables = $wpdb->get_results("SHOW TABLES");
         $tablesIn = "Tables_in_{$wpdb->dbname}";
 
         $tableList = [];
         foreach ($tables as $table) {
-            $tableList[] = [
-                "name" => $table->$tablesIn
-            ];
-        }
-
-        return $tableList;
-    }
-
-    public static function get_wp_tables() {
-        global $wpdb;
-        $wp_tables = $wpdb->tables('all', true);
-        $tables = [];
-        foreach($wp_tables as $table => $name) {
-            $tables[] = [
-                "name" => $name
-            ];
-        }
-        return $tables;
-    }
-
-    public static function get_non_wp_tables() {
-        $wp_tables = self::get_wp_tables();
-        $all_tables = self::get_tables();
-        $non_wp_tables = [];
-        foreach ($all_tables as $table) {
-            $isWpTable = false;
-            foreach($wp_tables as $wpTable) {
-                if(strcmp($table['name'],$wpTable['name'])) {
-                    $isWpTable = true;
-                    break;
-                }
-            }
-            if(!$isWpTable) {
-                $non_wp_tables[] = [
-                    "name" => $table['name']
+            if(!in_array($table->$tablesIn, $excludeTables)) {
+                $tableList[] = [
+                    "name" => $table->$tablesIn
                 ];
             }
         }
-        return $non_wp_tables;
+        return $tableList;
     }
 
+    /**
+     * Obtains all the plugins which are currently disabled.
+     * @return array
+     */
     public static function get_deactivated_plugins() {
         if ( ! function_exists( 'get_plugins' ) ) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -89,6 +73,10 @@ class Database {
         return $deactivatedPlugins;
     }
 
+    /**
+     * Obtains all the themes which are currently disabled.
+     * @return array
+     */
     public static function get_deactivated_themes() {
         $wpThemes = wp_get_themes();
         $themes = [];
@@ -105,6 +93,10 @@ class Database {
         return $themes;
     }
 
+    /**
+     * Obtains all the plugins, regardless of whether they are activated or deactivated.
+     * @return array
+     */
     public static function get_plugins() {
         if ( ! function_exists( 'get_plugins' ) ) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -121,6 +113,10 @@ class Database {
         return $plugins;
     }
 
+    /**
+     * Obtains all the themes, regardless of whether they are activated or deactivated.
+     * @return array
+     */
     public static function get_themes() {
         $wpThemes = wp_get_themes();
         $themes = [];
