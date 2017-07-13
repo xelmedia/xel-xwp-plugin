@@ -1,46 +1,16 @@
 <?php
 namespace Xel\XWP;
 
+use Xel\XWP\Rest\RestConstants;
+use Xel\XWP\Rest\RestRoute;
+
 class Plugin {
 
     public function __construct() {
         add_action( 'rest_api_init',  array(__CLASS__ , 'xel_rest_init'));
     }
 
-    public static function xel_rest_init() {
-        $version = 'v1';
-        $namespace = 'xel-xwp/' . $version;
-
-        register_rest_route( $namespace, '/post-types/', array(
-            'methods'  => 'GET',
-            'callback' =>  array(__NAMESPACE__ .'\Database', 'get_post_types')
-        ) );
-
-        register_rest_route( $namespace, '/db-tables/', array(
-            'methods'  => 'GET',
-            'callback' =>  array(__NAMESPACE__ .'\Database', 'get_tables')
-        ) );
-
-        register_rest_route( $namespace, '/wp-tables/', array(
-            'methods'  => 'GET',
-            'callback' =>  array(__NAMESPACE__ .'\Database', 'get_wp_tables')
-        ) );
-
-        register_rest_route( $namespace, '/non-wp-tables/', array(
-            'methods'  => 'GET',
-            'callback' =>  array(__NAMESPACE__ .'\Database', 'get_non_wp_tables')
-        ) );
-
-        register_rest_route( $namespace, '/deactivated-plugins/', array(
-            'methods'  => 'GET',
-            'callback' =>  array(__NAMESPACE__ .'\Database', 'get_deactivated_plugins')
-        ) );
-
-        register_rest_route( $namespace, '/deactivated-themes/', array(
-            'methods'  => 'GET',
-            'callback' =>  array(__NAMESPACE__ .'\Database', 'get_deactivated_themes')
-        ) );
-
+    private static function xel_header_add() {
         remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
 
         add_filter( 'rest_pre_serve_request', function( $value ) {
@@ -50,5 +20,25 @@ class Plugin {
 
             return $value;
         });
+    }
+
+    private static function xel_rest_add(RestRoute $route) {
+        $version = 'v1';
+        $namespace = 'xel-xwp/' . $version;
+
+        register_rest_route( $namespace, $route->getPathUri(), array(
+            'methods'  => $route->getRequestType(),
+            'callback' =>  array($route->getClassPath(), $route->getMethodName())
+        ) );
+    }
+
+    public static function xel_rest_init() {
+        $restConstants = new RestConstants();
+        $routes = $restConstants->getRoutes();
+        foreach ($routes as $route) {
+            self::xel_rest_add($route);
+        }
+
+        self::xel_header_add();
     }
 }
