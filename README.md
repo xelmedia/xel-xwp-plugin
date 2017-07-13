@@ -18,6 +18,15 @@ Receive all post types of the WordPress site:
 
 `/wp-json/xel-xwp/v1/db-tables`
 
+`/wp-json/xel-xwp/v1/themes`
+
+`/wp-json/xel-xwp/v1/plugins`
+
+`/wp-json/xel-xwp/v1/deactivated-themes`
+
+`/wp-json/xel-xwp/v1/deactivated-plugins`
+
+
 
 ####WP REST API v2 docs: 
 
