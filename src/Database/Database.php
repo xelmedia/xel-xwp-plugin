@@ -1,36 +1,39 @@
 <?php
-namespace Xel\XWP;
+namespace Xel\XWP\Database;
 
 
-class Database {
+use Xel\XWP\Domain\WpData;
+use Xel\XWP\Util;
+
+class Database implements IDatabase {
 
     /**
      * Obtains all the postTypes in the database with a few exclusions.
      * @return array
      */
-    public static function get_post_types() {
+    public static function get_post_types(): array {
         $postTypes = get_post_types('', 'objects');
 
         $excludePostTypes = ['customize_changeset', 'attachment', 'revision', 'nav_menu_item', 'custom_css'];
 
-        $postTypesList = [];
+        $response = [];
         foreach ($postTypes as $postType) {
             if(!in_array($postType->name, $excludePostTypes)) {
-                $postTypesList[] = [
-                    "label" => $postType->label,
-                    "name" => $postType->name,
-                ];
+                $response[] =  WpData::builder()
+                                ->name($postType->name)
+                                ->label($postType->label)
+                                ->build();
             }
         }
 
-        return $postTypesList;
+        return $response;
     }
 
     /**
      * Obtains all the Wordpress tables, except the WP-core tables that are regulated by the wpcli commands (i.e postTypes)
      * @return array
      */
-    public static function get_tables() {
+    public static function get_tables(): array {
         global $wpdb;
         $excludeTables = ['options', 'users', 'usermeta', 'comments', 'commentmeta', 'termmeta', 'terms', 'term_taxonomy', 'term_relationships', 'posts', 'postmeta' ];
         foreach ($excludeTables as $key => $value) {
@@ -40,92 +43,92 @@ class Database {
         $tables = $wpdb->get_results("SHOW TABLES");
         $tablesIn = "Tables_in_{$wpdb->dbname}";
 
-        $tableList = [];
+        $response = [];
         foreach ($tables as $table) {
             if(!in_array($table->$tablesIn, $excludeTables)) {
-                $tableList[] = [
-                    "name" => $table->$tablesIn
-                ];
+                $response[] =  WpData::builder()
+                                ->name($table->$tablesIn)
+                                ->build();
             }
         }
-        return $tableList;
+        return $response;
     }
 
     /**
      * Obtains all the plugins which are currently disabled.
      * @return array
      */
-    public static function get_deactivated_plugins() {
+    public static function get_deactivated_plugins(): array {
         if ( ! function_exists( 'get_plugins' ) ) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
         $all_plugins = get_plugins();
-        $deactivatedPlugins = [];
+        $response = [];
 
         foreach ($all_plugins as $file => $plugin) {
             if(is_plugin_inactive($plugin)) {
-                $deactivatedPlugins[] = [
-                    "name"  => Util::get_plugin_name($file),
-                    "label" => $plugin["Name"]
-                ];
+                $response[] = WpData::builder()
+                                ->name(Util::get_plugin_name($file))
+                                ->label($plugin["Name"])
+                                ->build();
             }
         }
-        return $deactivatedPlugins;
+        return $response;
     }
 
     /**
      * Obtains all the themes which are currently disabled.
      * @return array
      */
-    public static function get_deactivated_themes() {
+    public static function get_deactivated_themes(): array {
         $wpThemes = wp_get_themes();
-        $themes = [];
         $currentTheme = get_current_theme();
+        $response = [];
 
         foreach ($wpThemes as $theme => $value) {
             if(strcmp($currentTheme, $value["Name"])) {
-                $themes[] = [
-                    "name" => $theme,
-                    "label" => $value["Name"]
-                ];
+                $response[] = WpData::builder()
+                                ->name($theme)
+                                ->label($value["Name"])
+                                ->build();
             }
         }
-        return $themes;
+        return $response;
     }
 
     /**
      * Obtains all the plugins, regardless of whether they are activated or deactivated.
      * @return array
      */
-    public static function get_plugins() {
+    public static function get_plugins(): array {
         if ( ! function_exists( 'get_plugins' ) ) {
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         }
         $all_plugins = get_plugins();
-        $plugins = [];
+        $response = [];
 
         foreach ($all_plugins as $plugin => $value) {
-            $plugins[] = [
-                "name" => Util::get_plugin_name($plugin),
-                "label" => $value["Name"]
-            ];
+            $response[] = WpData::builder()
+                            ->name(Util::get_plugin_name($plugin))
+                            ->label($value["Name"])
+                            ->build();
         }
-        return $plugins;
+        return $response;
     }
 
     /**
      * Obtains all the themes, regardless of whether they are activated or deactivated.
      * @return array
      */
-    public static function get_themes() {
+    public static function get_themes(): array  {
         $wpThemes = wp_get_themes();
-        $themes = [];
+        $response = [];
         foreach ($wpThemes as $theme => $value) {
-            $themes[] = [
-                "name" => $theme,
-                "label" => $value["Name"]
-            ];
+            $response[] = WpData::builder()
+                            ->name($theme)
+                            ->label($value["Name"])
+                            ->build();
         }
-        return $themes;
+        return $response;
     }
 }

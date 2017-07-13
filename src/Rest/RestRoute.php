@@ -5,10 +5,10 @@ namespace Xel\XWP\Rest;
 
 
 class RestRoute {
-    protected $methodName;
-    protected $classPath;
-    protected $pathUri;
-    protected $requestType;
+    private $methodName;
+    private $classPath;
+    private $pathUri;
+    private $requestType;
 
     public function __construct($methodName, $class, $pathUri, $requestType) {
         $reflectionClass = new \ReflectionClass($class);

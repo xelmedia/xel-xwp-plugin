@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Xel\XWP\Rest;
 
 
-use Xel\XWP\Database;
+use Xel\XWP\Database\Database;
 
 class RestConstants {
     private $routes;
@@ -19,6 +19,8 @@ class RestConstants {
         $routes[] = new RestRoute('get_deactivated_themes',Database::class,'/deactivated-themes/', $requestType);
         $routes[] = new RestRoute('get_plugins',Database::class,'/plugins/', $requestType);
         $routes[] = new RestRoute('get_themes',Database::class,'/themes/', $requestType);
+
+        $this->routes = $routes;
     }
 
     public function getRoutes() {
