@@ -3,13 +3,12 @@ declare(strict_types=1);
 
 namespace Xel\XWP\Domain;
 
-use Xel\Common\EntityBuilder;
 
-class WpDataBuilder implements EntityBuilder {
+class WpDataBuilder {
     private $label;
     private $name;
 
-    public function getLabel(): ?String {
+    public function getLabel() {
         return $this->label;
     }
 
