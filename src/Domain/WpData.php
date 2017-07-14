@@ -3,13 +3,9 @@ declare(strict_types=1);
 
 namespace Xel\XWP\Domain;
 
-use Xel\Common\Serializable;
 
-class WpData extends Serializable {
-
-    /** @optional */
+class WpData implements \JsonSerializable {
     protected $label;
-    /** @var  String*/
     protected $name;
 
     public function __construct(WpDataBuilder $builder) {
@@ -17,7 +13,7 @@ class WpData extends Serializable {
         $this->label = $builder->getLabel();
     }
 
-    public function getLabel(): ?string {
+    public function getLabel() {
         return $this->label;
     }
 
@@ -27,5 +23,20 @@ class WpData extends Serializable {
 
     public static function builder(): WpDataBuilder {
         return new WpDataBuilder();
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    function jsonSerialize() {
+        $return = ["name" => $this->name];
+        if($this->label !== null) {
+            $return["label"] = $this->label;
+        }
+        return $return;
     }
 }

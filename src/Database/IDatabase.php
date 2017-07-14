@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Xel\XWP\Database;
 
 
-use Xel\XWP\Domain\WpDataResponse;
-
 interface IDatabase {
     public static function get_post_types();
     public static function get_tables();
