@@ -7,7 +7,7 @@ use Xel\XWP\Rest\RestRoute;
 class Plugin {
 
     public function __construct() {
-        add_action( 'rest_api_init',  array(__CLASS__ , 'xel_rest_init'));
+        add_action('rest_api_init', array(__CLASS__ , 'xel_rest_init'));
     }
 
     private static function xel_header_add() {
@@ -32,7 +32,27 @@ class Plugin {
         ) );
     }
 
+    /**
+     * Authorization method that checks whether the api-key is valid.
+     * If not equal, request api-key not set or there is no api-key set for this site, it'll exit using an unauthorized
+     * response (401).
+     * @return bool || WP_ERROR
+     */
+    public static function xel_authorize() {
+        if (array_key_exists(RestConstants::PATH_PARAM_API_KEY, $_REQUEST)) {
+            $apiKeyRequest = $_REQUEST[RestConstants::PATH_PARAM_API_KEY];
+            $apiKeyResponse = get_option(RestConstants::WP_TABLE_OPTION_API_KEY);
+
+            if($apiKeyResponse && $apiKeyRequest === $apiKeyResponse) {
+                return true;
+            }
+        }
+        return new \WP_Error( 'rest_cannot_access', RestConstants::ERROR_MSG_API_KEY, array( 'status' => rest_authorization_required_code() ) );
+    }
+
     public static function xel_rest_init() {
+        add_filter('rest_authentication_errors', array(__CLASS__ , 'xel_authorize'));
+
         $restConstants = new RestConstants();
         $routes = $restConstants->getRoutes();
         foreach ($routes as $route) {
