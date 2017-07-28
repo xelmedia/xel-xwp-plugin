@@ -21,7 +21,7 @@ class Database implements IDatabase {
             if(!in_array($postType->name, $excludePostTypes)) {
                 $response[] =  WpData::builder()
                                 ->name($postType->name)
-                                ->label(html_entity_decode($postType->label))
+                                ->label($postType->label)
                                 ->build();
             }
         }
@@ -71,7 +71,7 @@ class Database implements IDatabase {
             if(is_plugin_inactive($plugin)) {
                 $response[] = WpData::builder()
                                 ->name(Util::get_plugin_name($file))
-                                ->label(html_entity_decode($plugin["Name"]))
+                                ->label($plugin["Name"])
                                 ->build();
             }
         }
@@ -92,7 +92,7 @@ class Database implements IDatabase {
             if(strcmp($currentTheme, $value["Name"])) {
                 $response[] = WpData::builder()
                                 ->name($theme)
-                                ->label(html_entity_decode($value["Name"]))
+                                ->label($value["Name"])
                                 ->build();
             }
         }
@@ -114,7 +114,7 @@ class Database implements IDatabase {
         foreach ($all_plugins as $plugin => $value) {
             $response[] = WpData::builder()
                             ->name(Util::get_plugin_name($plugin))
-                            ->label(html_entity_decode($value["Name"]))
+                            ->label($value["Name"])
                             ->build();
         }
         return $response;
@@ -131,7 +131,7 @@ class Database implements IDatabase {
         foreach ($wpThemes as $theme => $value) {
             $response[] = WpData::builder()
                             ->name($theme)
-                            ->label(html_entity_decode($value["Name"]))
+                            ->label($value["Name"])
                             ->build();
         }
         return $response;
