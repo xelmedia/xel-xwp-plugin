@@ -13,6 +13,7 @@ class Plugin {
     private static function xel_header_add() {
         remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
 
+        //TODO: these cross origin settings can be more strict
         add_filter( 'rest_pre_serve_request', function( $value ) {
             header( 'Access-Control-Allow-Origin: *' );
             header( 'Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE' );
