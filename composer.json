@@ -1,6 +1,6 @@
 {
     "name": "xel-webservices/xel-xwp-plugin",
-    "version": "1.11",
+    "version": "1.12",
     "description": "Xel WordPress MU plugin",
     "minimum-stability": "stable",
     "autoload": {
