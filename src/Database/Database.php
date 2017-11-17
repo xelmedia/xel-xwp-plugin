@@ -133,7 +133,7 @@ class Database implements IDatabase {
 
         $response = [];
         foreach ($wpThemes as $theme => $value) {
-            $enabled = strcmp($currentTheme, $value["Name"]) ? true : false;
+            $enabled = $currentTheme === $value["Name"];
             $response[] = WpData::builder()
                             ->name($theme)
                             ->label($value["Name"])
