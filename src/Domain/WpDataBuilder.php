@@ -7,6 +7,7 @@ namespace Xel\XWP\Domain;
 class WpDataBuilder {
     private $label;
     private $name;
+    private $enabled;
 
     public function getLabel() {
         return $this->label;
@@ -16,6 +17,10 @@ class WpDataBuilder {
         return $this->name;
     }
 
+    public function getEnabled(): bool {
+        return $this->enabled;
+    }
+
     public function label(String $label): WpDataBuilder {
         $this->label = $label;
         return $this;
@@ -23,6 +28,11 @@ class WpDataBuilder {
 
     public function name(String $name): WpDataBuilder {
         $this->name = $name;
+        return $this;
+    }
+
+    public function enabled(bool $enabled): WpDataBuilder {
+        $this->enabled = $enabled;
         return $this;
     }
 

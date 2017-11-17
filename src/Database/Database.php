@@ -112,9 +112,11 @@ class Database implements IDatabase {
         $response = [];
 
         foreach ($all_plugins as $plugin => $value) {
+            $disabled = is_plugin_inactive($plugin);
             $response[] = WpData::builder()
                             ->name(Util::get_plugin_name($plugin))
                             ->label($value["Name"])
+                            ->enabled(!$disabled)
                             ->build();
         }
         return $response;
@@ -127,11 +129,15 @@ class Database implements IDatabase {
      */
     public static function get_themes($request): array  {
         $wpThemes = wp_get_themes();
+        $currentTheme = get_current_theme();
+
         $response = [];
         foreach ($wpThemes as $theme => $value) {
+            $enabled = strcmp($currentTheme, $value["Name"]) ? true : false;
             $response[] = WpData::builder()
                             ->name($theme)
                             ->label($value["Name"])
+                            ->enabled($enabled)
                             ->build();
         }
         return $response;

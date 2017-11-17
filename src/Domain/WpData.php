@@ -7,10 +7,12 @@ namespace Xel\XWP\Domain;
 class WpData implements \JsonSerializable {
     protected $label;
     protected $name;
+    protected $enabled;
 
     public function __construct(WpDataBuilder $builder) {
         $this->name = $builder->getName();
         $this->label = $builder->getLabel();
+        $this->enabled = $builder->getEnabled();
     }
 
     public function getLabel() {
@@ -19,6 +21,10 @@ class WpData implements \JsonSerializable {
 
     public function getName(): string {
         return $this->name;
+    }
+
+    public function getEnabled(): bool {
+        return $this->enabled;
     }
 
     public static function builder(): WpDataBuilder {
