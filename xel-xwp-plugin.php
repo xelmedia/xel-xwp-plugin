@@ -1,10 +1,13 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit;
-if ( file_exists($composer = WPMU_PLUGIN_DIR . '/xel-xwp-plugin/vendor/autoload.php') ) {
-	require_once $composer;
-}
+if (!defined('ABSPATH')) exit;
+
+try {
+    if (file_exists($composer = WPMU_PLUGIN_DIR . '/xel-xwp-plugin/vendor/autoload.php')) {
+        require_once $composer;
+    }
+} catch(\Throwable $t) {}
 
 use Xel\XWP\Plugin;
 
-new Plugin();
+try { new Plugin(); } catch (\Throwable $t) {}
