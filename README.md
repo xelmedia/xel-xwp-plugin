@@ -2,7 +2,7 @@
 
 Extending WP RestAPI v2 in our Must Use Plugin. 
 
-####Installation: 
+#### Installation:
 
 - Clone project in the must use directory
 - Composer install
@@ -10,7 +10,7 @@ Extending WP RestAPI v2 in our Must Use Plugin.
 
 That's it! Verify if the url works! 
 
-###Usage
+### Usage
 
 Receive all post types of the WordPress site: 
 
@@ -28,6 +28,6 @@ Receive all post types of the WordPress site:
 
 
 
-####WP REST API v2 docs: 
+#### WP REST API v2 docs:
 
 http://v2.wp-api.org/
