@@ -10,10 +10,10 @@ class Util {
      * @return string
      */
     public static function get_plugin_name($basename) {
-        if ( false === strpos( $basename, '/' ) )
-            $name = basename( $basename, '.php' );
+        if ( false === strpos($basename, '/' ) )
+            $name = basename($basename, '.php' );
         else
-            $name = dirname( $basename );
+            $name = dirname($basename);
         return $name;
     }
 }

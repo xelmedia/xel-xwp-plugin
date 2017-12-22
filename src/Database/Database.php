@@ -69,10 +69,13 @@ class Database implements IDatabase {
 
         foreach ($all_plugins as $file => $plugin) {
             if(is_plugin_inactive($plugin)) {
-                $response[] = WpData::builder()
+                $wpData = WpData::builder()
                                 ->name(Util::get_plugin_name($file))
-                                ->label($plugin["Name"])
-                                ->build();
+                                ->label($plugin["Name"]);
+
+                if($version = self::get_plugin_version($file)) $wpData->versionNumber($version);
+                if($websiteUrl = self::get_plugin_website_url($file)) $wpData->websiteUrl($websiteUrl);
+                $response[] = $wpData->build();
             }
         }
         return $response;
@@ -90,10 +93,13 @@ class Database implements IDatabase {
 
         foreach ($wpThemes as $theme => $value) {
             if(strcmp($currentTheme, $value["Name"])) {
-                $response[] = WpData::builder()
+                $wpData = WpData::builder()
                                 ->name($theme)
-                                ->label($value["Name"])
-                                ->build();
+                                ->label($value["Name"]);
+
+                if($version = self::get_theme_version($theme)) $wpData->versionNumber($version);
+                if($websiteUrl = self::get_theme_website_url($theme)) $wpData->websiteUrl($websiteUrl);
+                $response[] = $wpData->build();
             }
         }
         return $response;
@@ -113,11 +119,14 @@ class Database implements IDatabase {
 
         foreach ($all_plugins as $plugin => $value) {
             $disabled = is_plugin_inactive($plugin);
-            $response[] = WpData::builder()
+            $wpData = WpData::builder()
                             ->name(Util::get_plugin_name($plugin))
                             ->label($value["Name"])
-                            ->enabled(!$disabled)
-                            ->build();
+                            ->enabled(!$disabled);
+
+            if($version = self::get_plugin_version($plugin)) $wpData->versionNumber($version);
+            if($websiteUrl = self::get_plugin_website_url($plugin)) $wpData->websiteUrl($websiteUrl);
+            $response[] = $wpData->build();
         }
         return $response;
     }
@@ -134,12 +143,65 @@ class Database implements IDatabase {
         $response = [];
         foreach ($wpThemes as $theme => $value) {
             $enabled = $currentTheme === $value["Name"];
-            $response[] = WpData::builder()
+            $wpData = WpData::builder()
                             ->name($theme)
                             ->label($value["Name"])
-                            ->enabled($enabled)
-                            ->build();
+                            ->enabled($enabled);
+
+            if($version = self::get_theme_version($theme)) $wpData->versionNumber($version);
+            if($websiteUrl = self::get_theme_website_url($theme)) $wpData->websiteUrl($websiteUrl);
+            $response[] = $wpData->build();
         }
         return $response;
+    }
+
+    private static function get_theme_version($theme) {
+        return self::get_theme_property($theme, "Version:");
+    }
+
+    private static function get_theme_website_url($theme) {
+        return self::get_theme_property($theme, "Theme URI:");
+    }
+
+    private static function get_plugin_version($plugin) {
+        return self::get_plugin_property($plugin, "Version:");
+    }
+
+    private static function get_plugin_website_url($plugin) {
+        return self::get_plugin_property($plugin, "Plugin URI:");
+    }
+
+    private static function get_plugin_property($plugin, string $property) {
+        $pluginFileName = Util::get_plugin_name($plugin);
+        $pathToPlugin = ABSPATH . "wp-content/plugins/{$pluginFileName}";
+
+        if(!file_exists($path = "{$pathToPlugin}.php")) {
+            if (!file_exists($path = "{$pathToPlugin}/{$pluginFileName}.php")) {
+                $pathToPlugin .= "/{$pluginFileName}";
+                if (!file_exists($path = "{$pathToPlugin}/{$pluginFileName}/{$pluginFileName}.php")) {
+                    return null;
+                }
+            }
+        }
+        return self::read_property_from_file($path, $property);
+    }
+
+    private static function get_theme_property($theme, string $property) {
+        $stylePath = dirname(get_template_directory()) . "/{$theme}/style.css";
+        if(!file_exists($stylePath)) {
+            return null;
+        }
+        return self::read_property_from_file($stylePath, $property);
+    }
+
+    private static function read_property_from_file(string $filePath, string $property) {
+        $fileContentsArray = @file($filePath) ?? [];
+        foreach($fileContentsArray as $line) {
+            if(strpos($line, $property) !== false) {
+                $value = substr($line, strpos($line, ":") + 1);
+                $value = preg_replace('/\s*/m', '', $value);
+            }
+        }
+        return $value ?? null;
     }
 }

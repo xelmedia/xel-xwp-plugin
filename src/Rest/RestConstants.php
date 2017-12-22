@@ -20,7 +20,7 @@ class RestConstants {
         $routes[] = new RestRoute('get_post_types',Database::class,'/post-types',$requestType);
         $routes[] = new RestRoute('get_tables',Database::class,'/db-tables/',$requestType);
         $routes[] = new RestRoute('get_deactivated_plugins',Database::class,'/deactivated-plugins/', $requestType);
-        $routes[] = new RestRoute('get_deactivated_themes',Database::class,'/deactivated-themes//', $requestType);
+        $routes[] = new RestRoute('get_deactivated_themes',Database::class,'/deactivated-themes/', $requestType);
         $routes[] = new RestRoute('get_plugins',Database::class,'/plugins/', $requestType);
         $routes[] = new RestRoute('get_themes',Database::class,'/themes/', $requestType);
 
