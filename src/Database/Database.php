@@ -73,8 +73,14 @@ class Database implements IDatabase {
                                 ->name(Util::get_plugin_name($file))
                                 ->label($plugin["Name"]);
 
-                if($version = self::get_plugin_version($file)) $wpData->versionNumber($version);
-                if($websiteUrl = self::get_plugin_website_url($file)) $wpData->websiteUrl($websiteUrl);
+                if($version = self::get_plugin_version($file)) {
+                    $wpData->versionNumber($version);
+                }
+
+                if($websiteUrl = self::get_plugin_website_url($file)) {
+                    $wpData->websiteUrl($websiteUrl);
+                }
+
                 $response[] = $wpData->build();
             }
         }
@@ -97,8 +103,13 @@ class Database implements IDatabase {
                                 ->name($theme)
                                 ->label($value["Name"]);
 
-                if($version = self::get_theme_version($theme)) $wpData->versionNumber($version);
-                if($websiteUrl = self::get_theme_website_url($theme)) $wpData->websiteUrl($websiteUrl);
+                if($version = self::get_theme_version($theme)) {
+                    $wpData->versionNumber($version);
+                }
+
+                if($websiteUrl = self::get_theme_website_url($theme)) {
+                    $wpData->websiteUrl($websiteUrl);
+                }
                 $response[] = $wpData->build();
             }
         }
@@ -124,8 +135,14 @@ class Database implements IDatabase {
                             ->label($value["Name"])
                             ->enabled(!$disabled);
 
-            if($version = self::get_plugin_version($plugin)) $wpData->versionNumber($version);
-            if($websiteUrl = self::get_plugin_website_url($plugin)) $wpData->websiteUrl($websiteUrl);
+            if($version = self::get_plugin_version($plugin)) {
+                $wpData->versionNumber($version);
+            }
+
+            if($websiteUrl = self::get_plugin_website_url($plugin)) {
+                $wpData->websiteUrl($websiteUrl);
+            }
+
             $response[] = $wpData->build();
         }
         return $response;
@@ -148,27 +165,33 @@ class Database implements IDatabase {
                             ->label($value["Name"])
                             ->enabled($enabled);
 
-            if($version = self::get_theme_version($theme)) $wpData->versionNumber($version);
-            if($websiteUrl = self::get_theme_website_url($theme)) $wpData->websiteUrl($websiteUrl);
+            if($version = self::get_theme_version($theme)) {
+                $wpData->versionNumber($version);
+            }
+
+            if($websiteUrl = self::get_theme_website_url($theme)) {
+                $wpData->websiteUrl($websiteUrl);
+            }
+
             $response[] = $wpData->build();
         }
         return $response;
     }
 
     private static function get_theme_version($theme) {
-        return self::get_theme_property($theme, "Version:");
+        return self::get_theme_property($theme, "Version");
     }
 
     private static function get_theme_website_url($theme) {
-        return self::get_theme_property($theme, "Theme URI:");
+        return self::get_theme_property($theme, "Theme URI");
     }
 
     private static function get_plugin_version($plugin) {
-        return self::get_plugin_property($plugin, "Version:");
+        return self::get_plugin_property($plugin, "Version");
     }
 
     private static function get_plugin_website_url($plugin) {
-        return self::get_plugin_property($plugin, "Plugin URI:");
+        return self::get_plugin_property($plugin, "Plugin URI");
     }
 
     private static function get_plugin_property($plugin, string $property) {
@@ -177,10 +200,7 @@ class Database implements IDatabase {
 
         if(!file_exists($path = "{$pathToPlugin}.php")) {
             if (!file_exists($path = "{$pathToPlugin}/{$pluginFileName}.php")) {
-                $pathToPlugin .= "/{$pluginFileName}";
-                if (!file_exists($path = "{$pathToPlugin}/{$pluginFileName}/{$pluginFileName}.php")) {
-                    return null;
-                }
+                return null;
             }
         }
         return self::read_property_from_file($path, $property);
@@ -195,13 +215,14 @@ class Database implements IDatabase {
     }
 
     private static function read_property_from_file(string $filePath, string $property) {
-        $fileContentsArray = @file($filePath) ?? [];
-        foreach($fileContentsArray as $line) {
-            if(strpos($line, $property) !== false) {
-                $value = substr($line, strpos($line, ":") + 1);
-                $value = preg_replace('/\s*/m', '', $value);
-            }
+        $file = fopen($filePath, 'r');
+        $fileData = fread($file, 8192);
+        fclose($file);
+
+        $pattern = '/^[ \t\/*#@]*' . preg_quote($property, '/' ) . ':(.*)$/mi';
+        if (preg_match( $pattern, $fileData, $match) && $match[1]) {
+            return trim($match[1]);
         }
-        return $value ?? null;
+        return null;
     }
 }
