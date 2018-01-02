@@ -23,6 +23,7 @@ class RestConstants {
         $routes[] = new RestRoute('get_deactivated_themes',Database::class,'/deactivated-themes/', $requestType);
         $routes[] = new RestRoute('get_plugins',Database::class,'/plugins/', $requestType);
         $routes[] = new RestRoute('get_themes',Database::class,'/themes/', $requestType);
+        $routes[] = new RestRoute('get_core_version',Database::class,'/core-version/', $requestType);
 
         $this->routes = $routes;}
 

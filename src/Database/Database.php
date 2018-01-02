@@ -8,6 +8,15 @@ use Xel\XWP\Util;
 class Database implements IDatabase {
 
     /**
+     * Obtains the WP core version string.
+     * @param $request -> send from the client containing values such as api_key
+     * @return string
+     */
+    public static function get_core_version($request): string {
+        return get_bloginfo('version');
+    }
+
+    /**
      * Obtains all the postTypes in the database with a few exclusions.
      * @param $request -> send from the client containing values such as api_key
      * @return array
