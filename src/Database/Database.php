@@ -77,9 +77,10 @@ class Database implements IDatabase {
         $response = [];
 
         foreach ($all_plugins as $file => $plugin) {
-            if(is_plugin_inactive($plugin)) {
+            if(is_plugin_inactive($file)) {
                 $wpData = WpData::builder()
                                 ->name(Util::get_plugin_name($file))
+                                ->enabled(false)
                                 ->label($plugin["Name"]);
 
                 if($version = self::get_plugin_version($file)) {
@@ -137,18 +138,18 @@ class Database implements IDatabase {
         $all_plugins = get_plugins();
         $response = [];
 
-        foreach ($all_plugins as $plugin => $value) {
-            $disabled = is_plugin_inactive($plugin);
+        foreach ($all_plugins as $file => $plugin) {
+            $disabled = is_plugin_inactive($file);
             $wpData = WpData::builder()
-                            ->name(Util::get_plugin_name($plugin))
-                            ->label($value["Name"])
+                            ->name(Util::get_plugin_name($file))
+                            ->label($plugin["Name"])
                             ->enabled(!$disabled);
 
-            if($version = self::get_plugin_version($plugin)) {
+            if($version = self::get_plugin_version($file)) {
                 $wpData->versionNumber($version);
             }
 
-            if($websiteUrl = self::get_plugin_website_url($plugin)) {
+            if($websiteUrl = self::get_plugin_website_url($file)) {
                 $wpData->websiteUrl($websiteUrl);
             }
 
