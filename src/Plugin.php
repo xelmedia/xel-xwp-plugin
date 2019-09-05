@@ -7,7 +7,17 @@ use Xel\XWP\Rest\RestRoute;
 class Plugin {
 
     public function __construct() {
+        self::xel_manage_filters();
         add_action('rest_api_init', array(__CLASS__ , 'xel_rest_init'));
+    }
+
+    private static function xel_manage_filters() {
+        add_filter('automatic_updater_disabled', function() {
+            return true;
+        });
+        add_filter('auto_core_update_send_email', function() {
+            return false:
+        });
     }
 
     private static function xel_header_add() {
