@@ -12,12 +12,8 @@ class Plugin {
     }
 
     private static function xel_manage_filters() {
-        add_filter('automatic_updater_disabled', function() {
-            return true;
-        });
-        add_filter('auto_core_update_send_email', function() {
-            return false:
-        });
+        add_filter('automatic_updater_disabled', '__return_true');
+        add_filter('auto_core_update_send_email', '__return_false');
     }
 
     private static function xel_header_add() {
