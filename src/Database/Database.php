@@ -23,7 +23,7 @@ class Database implements IDatabase {
      */
     public static function get_post_types($request): array {
         $postTypes = get_post_types('', 'objects');
-        $excludePostTypes = ['customize_changeset', 'attachment', 'revision', 'nav_menu_item', 'custom_css'];
+        $excludePostTypes = ['customize_changeset', 'attachment', 'revision', 'custom_css'];
 
         $response = [];
         foreach ($postTypes as $postType) {
