@@ -13,6 +13,10 @@ class Plugin {
     }
 
     private static function xel_manage_filters() {
+        add_filter('auto_update_theme', '__return_false');
+        add_filter('auto_update_plugin', '__return_false');
+        add_filter('auto_update_core', '__return_false');
+
         add_filter('automatic_updater_disabled', '__return_true');
         add_filter('auto_core_update_send_email', '__return_false');
     }
@@ -24,8 +28,9 @@ class Plugin {
     private static function xel_rest_add(RestRoute $route) {
         register_rest_route(self::ENDPOINT_NAMESPACE, $route->getPathUri(), array(
             'methods'  => $route->getRequestType(),
-            'callback' =>  array($route->getClassPath(), $route->getMethodName())
-        ) );
+            'callback' =>  array($route->getClassPath(), $route->getMethodName()),
+            'permission_callback' => array(__CLASS__, 'xel_authorize')
+        ));
     }
 
     /**
@@ -50,8 +55,6 @@ class Plugin {
     }
 
     public static function xel_rest_init() {
-        add_filter('rest_authentication_errors', array(__CLASS__ , 'xel_authorize'));
-
         $restConstants = new RestConstants();
         $routes = $restConstants->getRoutes();
         foreach ($routes as $route) {
