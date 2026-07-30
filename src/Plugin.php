@@ -28,6 +28,21 @@ class Plugin {
         remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
     }
 
+    private static function disable_rest_user_enumeration() {
+        /**
+         * Description: Blocks unauthenticated access to /wp/v2/users
+         */
+        add_filter('rest_authentication_errors', static function ($result) {
+            if ($result !== null || is_user_logged_in()) {
+                return $result;
+            }
+            if (strpos($_SERVER['REQUEST_URI'] ?? '', '/wp/v2/users') !== false) {
+                return new \WP_Error('rest_forbidden', 'Authentication required.', ['status' => 401]);
+            }
+            return $result;
+        });
+    }
+
     private static function xel_rest_add(RestRoute $route) {
         register_rest_route(self::ENDPOINT_NAMESPACE, $route->getPathUri(), array(
             'methods'  => $route->getRequestType(),
@@ -65,5 +80,6 @@ class Plugin {
         }
 
         self::xel_header_add();
+        self::disable_rest_user_enumeration();
     }
 }

@@ -26,7 +26,9 @@ Receive all post types of the WordPress site:
 
 `/wp-json/xel-xwp/v1/deactivated-plugins`
 
+## Filters
 
+By default, this plugin blocks unauthenticated access to the `/wp/v2/users` route WordPress's `wp-json` API exposes.
 
 #### WP REST API v2 docs:
 
