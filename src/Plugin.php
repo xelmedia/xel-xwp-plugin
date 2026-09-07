@@ -9,6 +9,7 @@ class Plugin {
 
     public function __construct() {
         self::xel_manage_filters();
+        self::disable_unauthenticated_feeds();
         add_action('rest_api_init', array(__CLASS__ , 'xel_rest_init'));
     }
 
@@ -39,6 +40,7 @@ class Plugin {
             $request_uri = $_SERVER['REQUEST_URI'] ?? '';
             if (
                 strpos($request_uri, '/wp/v2/users') !== false ||
+                strpos($request_uri, '/wp/v2/posts') !== false ||
                 strpos($request_uri, '/oembed/1.0/embed') !== false
             ) {
                 return new \WP_Error('rest_forbidden', 'Authentication required.', ['status' => 401]);
@@ -85,5 +87,23 @@ class Plugin {
 
         self::xel_header_add();
         self::disable_rest_user_enumeration();
+    }
+
+    /**
+     * Disables unauthenticed access to feeds, which exposes user names
+     * @return void
+     */
+    private static function disable_unauthenticated_feeds() {
+        add_action('template_redirect', static function () {
+            if (is_user_logged_in()) {
+                return;
+            }
+
+            if (is_feed()) {
+                status_header(401);
+                nocache_headers();
+                exit;
+            }
+        });
     }
 }
