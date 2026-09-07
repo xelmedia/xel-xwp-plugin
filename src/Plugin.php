@@ -36,7 +36,11 @@ class Plugin {
             if ($result !== null || is_user_logged_in()) {
                 return $result;
             }
-            if (strpos($_SERVER['REQUEST_URI'] ?? '', '/wp/v2/users') !== false) {
+            $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+            if (
+                strpos($request_uri, '/wp/v2/users') !== false ||
+                strpos($request_uri, '/oembed/1.0/embed') !== false
+            ) {
                 return new \WP_Error('rest_forbidden', 'Authentication required.', ['status' => 401]);
             }
             return $result;
